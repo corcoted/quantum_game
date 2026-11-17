@@ -1,0 +1,13 @@
+[workspace]
+authors = ["Ted Corcovilos <corcovilost@duq.edu>"]
+channels = ["conda-forge"]
+name = "quantum_game"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = "3.*"
+numpy = ">=2.5.5,<3"
+ipykernel = ">=7.4.0,<8"
