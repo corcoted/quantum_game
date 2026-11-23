@@ -1,6 +1,4 @@
 
-# coding: utf-8
-
 # # Quantum Guessing Game
 # by Ted Corcovilos 20160610
 #
@@ -8,13 +6,16 @@
 # The player requests measurements (Pauli operators Sx, Sy, or Sz) and attempts to guess the state.
 # v.3 20261117 migrate to external game files
 
-import random #for generating random numbers for the measurements
+import random  #for generating random numbers for the measurements
+
 random.seed() # set a seed based on current time
 
-import numpy as np
-from pathlib import Path
-import csv
 import argparse
+import csv
+from pathlib import Path
+
+import numpy as np
+
 
 def read_game_file(name):
     # reads the states from a csv file and returns them as an np.array
@@ -45,7 +46,7 @@ def measure(state, axis):
     """
     Perform a quantum measurement on a state vector along an axis vector. Returns +/-1.
     """
-    #TODO simulate dice rolls
+    #simulate dice rolls
     if (random.randint(1,dsize)<=lookup[axis,state]):
         out = 1
     else:
@@ -56,8 +57,7 @@ def print_state_table():
     print(game_comment)
     print("Possible states are")
     for i in range(0,Nstates,1):
-        print("{0}: {1}".format(i,states[i]))
-    return
+        print(f"{i}: {states[i]}")
 
 def print_result_table(res,bad=[]):
     print("Result table: ")
@@ -66,7 +66,6 @@ def print_result_table(res,bad=[]):
     print(("{:>5} "*4).format("-",res[0,0], res[1,0], res[2,0]))
     if len(bad)>0:
         print(f"Bad guesses: {bad}")
-    return
 
 def play(): #play the game!
     """
@@ -78,7 +77,7 @@ def play(): #play the game!
     resultTable = np.zeros((measurements.shape[0],2),dtype=int)
     goal = random.randrange(Nstates)
     while (True): #main measurement loop
-        print("Measurement number {0}".format(guesses))
+        print(f"Measurement number {guesses}")
         test = -1
         while test == -1: #make sure we have a valid input
             print("Which measurement do you want: x, y, z, (g)uess, (s)how states, show (r)esults, or (q)uit? ")
@@ -93,7 +92,7 @@ def play(): #play the game!
                 'q': -99
             }.get(key,-1)
         if(test==-99):
-            print("Quit.  State was {0}: {1}".format(goal,states[goal]))
+            print(f"Quit.  State was {goal}: {states[goal]}")
             quit=True
             break
         if(test==-20): # Show the state table
@@ -106,20 +105,20 @@ def play(): #play the game!
             print_state_table()
             key = int(input("Guess? "))
             if (key==goal):
-                print("Correct! Final score: {}".format(guesses))
+                print(f"Correct! Final score: {guesses}")
                 break
             else:
-                print("Wrong! Penalty: {}".format(penalty))
+                print(f"Wrong! Penalty: {penalty}")
                 bad_guesses.append(key)
                 guesses = guesses+5
                 continue
         guesses = guesses+1
         result = measure(goal,test)
         resultTable[test,(1+result)//2] = resultTable[test,(1+result)//2]+1
-        Ntests = resultTable[test,0]+resultTable[test,1]
-        print("Measurement result: {0}".format(result))
+        #Ntests = resultTable[test,0]+resultTable[test,1]
+        print(f"Measurement result: {result}")
         if (guesses>maxguess):
-            print("Exceeded measurement limit!  Guesses = {}".format(guesses))
+            print(f"Exceeded measurement limit!  Guesses = {guesses}")
             break
         print_result_table(resultTable,bad_guesses)
     return guesses, goal, quit
@@ -156,17 +155,7 @@ def main():
     while not q:
         c, g, q = play()
         total = total + c
-        print("Total score = {}".format(total))
+        print(f"Total score = {total}")
 
 if __name__ == "__main__":
     main()
-
-args
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-f","--file", help="Name of game file", default='game1.csv')
-    args = parser.parse_args()
-
-args
-
-
